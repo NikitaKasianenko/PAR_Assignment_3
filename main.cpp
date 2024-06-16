@@ -7,8 +7,12 @@ using namespace std;
 typedef string(*encrypt_ptr)(string, int);
 typedef string(*decrypt_ptr)(string, int);
 
+void clearInputBuffer() {
+    cin.ignore(); 
+    while (cin.get() != '\n');
+}
+
 int main() {
-    size_t const bufferSize = 256;
 
     HINSTANCE handle = LoadLibrary(TEXT("caesar.dll"));
     if (handle == nullptr) {
@@ -46,8 +50,14 @@ int main() {
         getline(cin, text);
         cout << "Enter key: ";
         int key;
-        cin >> key;
-        cin.ignore();
+
+        while (!(cin >> key)) {
+            cin.clear(); 
+            clearInputBuffer();
+            cout << "Invalid key. Please enter a valid integer key: ";
+        }
+
+        cin.ignore(); 
 
         if (command == "1") {
             string encrypted_text = encrypt(text, key);
